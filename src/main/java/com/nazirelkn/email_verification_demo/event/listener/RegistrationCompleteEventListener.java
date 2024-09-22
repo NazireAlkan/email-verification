@@ -52,7 +52,7 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
         log.info("Click the link to verify your registration : {}" , url);
     }
 
-    public void sendVerificationEmail(String url) throws MessagingException, UnsupportedEncodingException {
+    private void sendVerificationEmail(String url) throws MessagingException, UnsupportedEncodingException {
         String subject = "Email verification";
         String senderName = "User Registration Portal Service";
         String mailContent = "<p> Hi, "+ theUser.getFirstName()+ ", </p>"+
@@ -62,12 +62,14 @@ public class RegistrationCompleteEventListener implements ApplicationListener<Re
                 "<p> Thank you <br> Users Registration Portal Service";
 
         MimeMessage message = mailSender.createMimeMessage();
-        var messageHelper = new MimeMessageHelper(message);
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message, true, "UTF-8");
 
         messageHelper.setFrom("nazirelkn@gmail.com", senderName);
         messageHelper.setTo(theUser.getEmail());
         messageHelper.setSubject(subject);
         messageHelper.setText(mailContent, true);
+
         mailSender.send(message);
+        log.info("{} Verification email sent to the address", theUser.getEmail());
     }
 }
